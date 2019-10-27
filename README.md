@@ -1,1 +1,1 @@
-# AnnouncementsBackend
+# announcements-backend
