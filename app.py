@@ -1,6 +1,7 @@
 from flask import Flask, request
 import json
 from db import db, Announcement
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -19,19 +20,24 @@ with app.app_context():
 def create_announcment():
     post_body = json.loads(request.data)
     name = post_body.get("name")
-    image_url = post_body.get("image_url")
+    imageUrl = post_body.get("imageUrl")
     subject = post_body.get("subject")
     body = post_body.get("body")
-    CTA_text = post_body.get("CTA_text")
-    CTA_action = post_body.get("CTA_action")
+    ctaText = post_body.get("ctaText")
+    ctaAction = post_body.get("ctaAction")
+    expirationDate = post_body.get("expirationDate")
+    try:
+        past = datetime.strptime(expirationDate, "%m/%d/%Y")
+    except:
+        return json.dumps({"error": "Please input a valid date of the form 'd/m/y'"})
     announcement = Announcement(
         name=name,
-        image_url=image_url,
+        imageUrl=imageUrl,
         subject=subject,
         body=body,
-        CTA_text=CTA_text,
-        CTA_action=CTA_action,
-        is_active=False,
+        ctaText=ctaText,
+        ctaAction=ctaAction,
+        expirationDate=past,
     )
     db.session.add(announcement)
     db.session.commit()
@@ -49,40 +55,14 @@ def delete_announcement(name):
     return json.dumps({"success": True}), 200
 
 
-@app.route("/activate/", methods=["PUT"])
-def activate_announcement():
-    post_body = json.loads(request.data)
-    name = post_body.get("name")
-    announcment = Announcement.query.filter_by(name=name).first()
-    if announcment is None:
-        return json.dumps({"success": False}), 401
-    for ann in Announcement.query.all():
-        ann.is_active = False  # Only one announcement is active at a time!
-    announcment.is_active = True
-    db.session.commit()
-    res = {"success": True}
-    return json.dumps(res), 200
-
-
-@app.route("/deactivate/", methods=["PUT"])
-def deactivate_announcement():
-    post_body = json.loads(request.data)
-    name = post_body.get("name")
-    announcment = Announcement.query.filter_by(name=name).first()
-    if announcment is None:
-        return json.dumps({"success": False}), 401
-    announcment.is_active = False
-    db.session.commit()
-    res = {"success": True}
-    return json.dumps(res), 200
-
-
 @app.route("/get_announcement/", methods=["GET"])
 def get_announcement():
-    active_announcement = Announcement.query.filter_by(is_active=True).first()
-    if active_announcement is None:
+    active_announcements = Announcement.query.filter(
+        Announcement.expirationDate > datetime.now()
+    ).all()
+    if active_announcements is None:
         return {"data": None}, 200
-    res = {"data": active_announcement.serialize()}
+    res = {"data": [announcement.serialize() for announcement in active_announcements]}
     return json.dumps(res), 200
 
 
