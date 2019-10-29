@@ -85,8 +85,8 @@ def delete_announcement(name):
     return SUCCESFUL_RESPONSE, 200
 
 
-@app.route("/get_announcement/", methods=["GET"])
-def get_announcement():
+@app.route("/get_announcements/", methods=["GET"])
+def get_announcements():
     active_announcements = Announcement.query.filter(
         Announcement.expirationDate > datetime.now()
     ).all()
