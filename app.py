@@ -1,6 +1,6 @@
 from flask import Flask, request
 import json
-from db import db, Announcement
+from db import Announcement, db
 from datetime import datetime
 
 app = Flask(__name__)
@@ -30,13 +30,13 @@ SUCCESFUL_RESPONSE = json.dumps({"success": True})
 @app.route("/create/", methods=["POST"])
 def create_announcment():
     post_body = json.loads(request.data)
-    name = post_body.get("name")
-    imageUrl = post_body.get("imageUrl")
-    subject = post_body.get("subject")
     body = post_body.get("body")
-    ctaText = post_body.get("ctaText")
     ctaAction = post_body.get("ctaAction")
+    ctaText = post_body.get("ctaText")
     expirationDate = post_body.get("expirationDate")
+    imageUrl = post_body.get("imageUrl")
+    name = post_body.get("name")
+    subject = post_body.get("subject")
     # Name is an identifier, so there should not be any duplicates.
     if Announcement.query.filter_by(name=name).first() is not None:
         return INVALID_NAME_ERROR, 400
@@ -45,13 +45,13 @@ def create_announcment():
     except:
         return INVALID_DATE_ERROR, 400
     announcement = Announcement(
-        name=name,
+        body=body,
+        ctaAction=ctaAction,
+        ctaText=ctaText,
+        expirationDate=expiration,
         imageUrl=imageUrl,
         subject=subject,
-        body=body,
-        ctaText=ctaText,
-        ctaAction=ctaAction,
-        expirationDate=expiration,
+        name=name,
     )
     db.session.add(announcement)
     db.session.commit()
