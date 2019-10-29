@@ -15,6 +15,17 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+INVALID_DATE_ERROR = json.dumps(
+    {"success": False, "error": "Please input a valid date of the form 'y/m/d'"}
+)
+INVALID_ANNOUNCEMENT_ERROR = json.dumps(
+    {"success": False, "error": "No announcement with that name exists"}
+)
+INVALID_NAME_ERROR = json.dumps(
+    {"success": False, "error": "Announcement with that name already exists"}
+)
+SUCCESFUL_RESPONSE = json.dumps({"success": True})
+
 
 @app.route("/create/", methods=["POST"])
 def create_announcment():
@@ -26,10 +37,13 @@ def create_announcment():
     ctaText = post_body.get("ctaText")
     ctaAction = post_body.get("ctaAction")
     expirationDate = post_body.get("expirationDate")
+    # Name is an identifier, so there should not be any duplicates.
+    if Announcement.query.filter_by(name=name).first() is not None:
+        return INVALID_NAME_ERROR, 400
     try:
-        past = datetime.strptime(expirationDate, "%m/%d/%Y")
+        expiration = datetime.strptime(expirationDate, "%Y/%m/%d")
     except:
-        return json.dumps({"error": "Please input a valid date of the form 'd/m/y'"})
+        return INVALID_DATE_ERROR, 400
     announcement = Announcement(
         name=name,
         imageUrl=imageUrl,
@@ -37,22 +51,38 @@ def create_announcment():
         body=body,
         ctaText=ctaText,
         ctaAction=ctaAction,
-        expirationDate=past,
+        expirationDate=expiration,
     )
     db.session.add(announcement)
     db.session.commit()
-    res = {"success": True}
-    return json.dumps(res), 200
+    return SUCCESFUL_RESPONSE, 200
+
+
+@app.route("/update_expiration_date/", methods=["PUT"])
+def update_expiration_date():
+    post_body = json.loads(request.data)
+    name = post_body.get("name")
+    expirationDate = post_body.get("expirationDate")
+    try:
+        expiration = datetime.strptime(expirationDate, "%Y/%m/%d")
+    except:
+        return INVALID_DATE_ERROR, 400
+    announcement = Announcement.query.filter_by(name=name).first()
+    if announcement is None:
+        return INVALID_ANNOUNCEMENT_ERROR, 400
+    announcement.expirationDate = expiration
+    db.session.commit()
+    return SUCCESFUL_RESPONSE, 200
 
 
 @app.route("/delete/<name>/", methods=["DELETE"])
 def delete_announcement(name):
     announcment = Announcement.query.filter_by(name=name).first()
     if announcment is None:
-        return json.dumps({"success": False}), 401
+        return INVALID_ANNOUNCEMENT_ERROR, 400
     db.session.delete(announcment)
     db.session.commit()
-    return json.dumps({"success": True}), 200
+    return SUCCESFUL_RESPONSE, 200
 
 
 @app.route("/get_announcement/", methods=["GET"])
@@ -60,8 +90,8 @@ def get_announcement():
     active_announcements = Announcement.query.filter(
         Announcement.expirationDate > datetime.now()
     ).all()
-    if active_announcements is None:
-        return {"data": None}, 200
+    if active_announcements == []:
+        return json.dumps({"data": None}), 200
     res = {"data": [announcement.serialize() for announcement in active_announcements]}
     return json.dumps(res), 200
 
