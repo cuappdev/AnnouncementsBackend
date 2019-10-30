@@ -1,11 +1,13 @@
+from datetime import datetime
+from db import Announcement, db
+from os import environ
+import Response
 from flask import Flask, request
 import json
-from db import Announcement, db
-from datetime import datetime
 
 app = Flask(__name__)
 
-db_filename = "annoucement.db"
+db_filename = environ["DB_FILENAME"]
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///%s" % db_filename
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -15,35 +17,27 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-INVALID_DATE_ERROR = json.dumps(
-    {"success": False, "error": "Please input a valid date of the form 'y/m/d'"}
-)
-INVALID_ANNOUNCEMENT_ERROR = json.dumps(
-    {"success": False, "error": "No announcement with that name exists"}
-)
-INVALID_NAME_ERROR = json.dumps(
-    {"success": False, "error": "Announcement with that name already exists"}
-)
-SUCCESFUL_RESPONSE = json.dumps({"success": True})
+
+def valid_date(str):
+    return datetime.strptime(str, "%Y/%m/%d")
 
 
 @app.route("/create/", methods=["POST"])
-def create_announcment():
+def create_announcement():
     post_body = json.loads(request.data)
-    body = post_body.get("body")
-    ctaAction = post_body.get("ctaAction")
-    ctaText = post_body.get("ctaText")
-    expirationDate = post_body.get("expirationDate")
-    imageUrl = post_body.get("imageUrl")
-    name = post_body.get("name")
-    subject = post_body.get("subject")
-    # Name is an identifier, so there should not be any duplicates.
-    if Announcement.query.filter_by(name=name).first() is not None:
-        return INVALID_NAME_ERROR, 400
     try:
-        expiration = datetime.strptime(expirationDate, "%Y/%m/%d")
+        body = post_body.get("body")
+        ctaAction = post_body.get("ctaAction")
+        ctaText = post_body.get("ctaText")
+        expirationDate = post_body.get("expirationDate")
+        imageUrl = post_body.get("imageUrl")
+        subject = post_body.get("subject")
     except:
-        return INVALID_DATE_ERROR, 400
+        return Response.INVALID_REQUEST_BODY_ERROR, 400
+    try:
+        expiration = valid_date(expirationDate)
+    except:
+        return Response.INVALID_DATE_ERROR, 400
     announcement = Announcement(
         body=body,
         ctaAction=ctaAction,
@@ -51,50 +45,56 @@ def create_announcment():
         expirationDate=expiration,
         imageUrl=imageUrl,
         subject=subject,
-        name=name,
     )
     db.session.add(announcement)
     db.session.commit()
-    return SUCCESFUL_RESPONSE, 200
+    return Response.SUCCESSFUL_RESPONSE, 200
 
 
-@app.route("/update_expiration_date/", methods=["PUT"])
-def update_expiration_date():
+@app.route("/update/<id>/", methods=["POST"])
+def update(id):
     post_body = json.loads(request.data)
-    name = post_body.get("name")
-    expirationDate = post_body.get("expirationDate")
-    try:
-        expiration = datetime.strptime(expirationDate, "%Y/%m/%d")
-    except:
-        return INVALID_DATE_ERROR, 400
-    announcement = Announcement.query.filter_by(name=name).first()
+    announcement = Announcement.query.get(id)
     if announcement is None:
-        return INVALID_ANNOUNCEMENT_ERROR, 400
-    announcement.expirationDate = expiration
+        return Response.INVALID_ANNOUNCEMENT_ERROR, 400
+    if not (all(k in Announcement.__table__.columns for k in post_body)):
+        return Response.INVALID_REQUEST_BODY_ERROR, 400
+    for k, v in post_body.items():
+        if k == "expirationDate":
+            try:
+                date = valid_date(v)
+                setattr(announcement, k, date)
+            except:
+                return Response.INVALID_DATE_ERROR, 400
+        else:
+            setattr(announcement, k, v)
     db.session.commit()
-    return SUCCESFUL_RESPONSE, 200
+    return Response.SUCCESSFUL_RESPONSE, 200
 
 
-@app.route("/delete/<name>/", methods=["DELETE"])
-def delete_announcement(name):
-    announcment = Announcement.query.filter_by(name=name).first()
+@app.route("/delete/<id>/", methods=["DELETE"])
+def delete_announcement(id):
+    announcment = Announcement.query.get(id)
     if announcment is None:
-        return INVALID_ANNOUNCEMENT_ERROR, 400
+        return Response.INVALID_ANNOUNCEMENT_ERROR, 400
     db.session.delete(announcment)
     db.session.commit()
-    return SUCCESFUL_RESPONSE, 200
+    return Response.SUCCESSFUL_RESPONSE, 200
 
 
-@app.route("/get_announcements/", methods=["GET"])
+@app.route("/active/")
 def get_announcements():
     active_announcements = Announcement.query.filter(
         Announcement.expirationDate > datetime.now()
     ).all()
-    if active_announcements == []:
-        return json.dumps({"data": None}), 200
-    res = {"data": [announcement.serialize() for announcement in active_announcements]}
+    if not active_announcements:
+        return json.dumps({"success": True, "data": None}), 200
+    res = {
+        "success": True,
+        "data": [announcement.serialize() for announcement in active_announcements],
+    }
     return json.dumps(res), 200
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=environ["PORT"], debug=True)
