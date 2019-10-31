@@ -11,6 +11,7 @@ class Announcement(db.Model):
     ctaText = db.Column(db.String, nullable=False)
     expirationDate = db.Column(db.Date, nullable=False)
     imageUrl = db.Column(db.String, nullable=False)
+    startDate = db.Column(db.Date, nullable=False)
     subject = db.Column(db.String, nullable=False)
 
     def serialize(self):
@@ -21,5 +22,6 @@ class Announcement(db.Model):
             "ctaText": self.ctaText,
             "expirationDate": str(self.expirationDate),
             "imageUrl": self.imageUrl,
+            "startDate": str(self.startDate),
             "subject": self.subject,
         }

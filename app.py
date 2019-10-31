@@ -32,10 +32,12 @@ def create_announcement():
         expirationDate = post_body.get("expirationDate")
         imageUrl = post_body.get("imageUrl")
         subject = post_body.get("subject")
+        startDate = post_body.get("startDate")
     except:
         return Response.INVALID_REQUEST_BODY_ERROR, 400
     try:
-        expiration = valid_date(expirationDate)
+        expiration = valid_date(expirationDate)  # checking for valid date
+        start = valid_date(startDate)
     except:
         return Response.INVALID_DATE_ERROR, 400
     announcement = Announcement(
@@ -44,6 +46,7 @@ def create_announcement():
         ctaText=ctaText,
         expirationDate=expiration,
         imageUrl=imageUrl,
+        startDate=start,
         subject=subject,
     )
     db.session.add(announcement)
@@ -57,12 +60,13 @@ def update(id):
     announcement = Announcement.query.get(id)
     if announcement is None:
         return Response.INVALID_ANNOUNCEMENT_ERROR, 400
+    # If any of the keys are not a field of Announcement return an error
     if not (all(k in Announcement.__table__.columns for k in post_body)):
         return Response.INVALID_REQUEST_BODY_ERROR, 400
     for k, v in post_body.items():
-        if k == "expirationDate":
+        if k == "expirationDate" or k == "startDate":
             try:
-                date = valid_date(v)
+                date = valid_date(v)  # checking for valid date
                 setattr(announcement, k, date)
             except:
                 return Response.INVALID_DATE_ERROR, 400
@@ -84,9 +88,11 @@ def delete_announcement(id):
 
 @app.route("/active/")
 def get_announcements():
-    active_announcements = Announcement.query.filter(
-        Announcement.expirationDate > datetime.now()
-    ).all()
+    active_announcements = (
+        Announcement.query.filter(Announcement.expirationDate > datetime.now())
+        .filter(Announcement.startDate < datetime.now())
+        .all()
+    )
     if not active_announcements:
         return json.dumps({"success": True, "data": None}), 200
     res = {
@@ -97,4 +103,4 @@ def get_announcements():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=environ["PORT"], debug=True)
+    app.run(host="0.0.0.0", port=environ["PORT"], debug=False)
