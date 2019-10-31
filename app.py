@@ -78,10 +78,10 @@ def update(id):
 
 @app.route("/delete/<id>/", methods=["DELETE"])
 def delete_announcement(id):
-    announcment = Announcement.query.get(id)
-    if announcment is None:
+    announcement = Announcement.query.get(id)
+    if announcement is None:
         return Response.INVALID_ANNOUNCEMENT_ERROR, 400
-    db.session.delete(announcment)
+    db.session.delete(announcement)
     db.session.commit()
     return Response.SUCCESSFUL_RESPONSE, 200
 
@@ -93,8 +93,6 @@ def get_announcements():
         .filter(Announcement.startDate < datetime.now())
         .all()
     )
-    if not active_announcements:
-        return json.dumps({"success": True, "data": None}), 200
     res = {
         "success": True,
         "data": [announcement.serialize() for announcement in active_announcements],
