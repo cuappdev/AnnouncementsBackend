@@ -101,4 +101,4 @@ def get_announcements():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=environ["PORT"], debug=False)
+    app.run(host="0.0.0.0", port=environ["PORT"])

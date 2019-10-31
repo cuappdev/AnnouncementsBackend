@@ -4,7 +4,7 @@ db = SQLAlchemy()
 
 
 class Announcement(db.Model):
-    __table_name = "announcement"
+    __table_name = "announcements"
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String, nullable=False)
     ctaAction = db.Column(db.String, nullable=False)
