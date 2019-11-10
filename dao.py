@@ -5,10 +5,10 @@ import json
 
 
 def get_app_by_name(name):
-    App.query.filter(App.name == name).first()
+    App.query.filter_by(name=name).first()
 
 
-def is_valid_date(str):
+def valid_date(str):
     return datetime.strptime(str, "%m/%d/%Y")
 
 
@@ -35,8 +35,8 @@ def commit_announcement(post_body):
     except:
         return constants.INVALID_REQUEST_BODY_ERROR, 400
     try:
-        expiration = is_valid_date(expiration_date)
-        start = is_valid_date(start_date)
+        expiration_date = valid_date(expiration_date)
+        start_date = valid_date(start_date)
     except:
         return constants.INVALID_DATE_ERROR, 400
     if not included_apps or not (all(app in constants.VALID_APPS for app in included_apps)):
@@ -45,9 +45,9 @@ def commit_announcement(post_body):
         body=body,
         cta_action=cta_action,
         cta_text=cta_text,
-        expiration_date=expiration,
+        expiration_date=expiration_date,
         image_url=image_url,
-        start_date=start,
+        start_date=start_date,
         subject=subject,
     )
     assign_apps_to_announcement(announcement, included_apps)
@@ -67,7 +67,7 @@ def update_announcement(post_body, id):
     for k, v in post_body.items():
         if k == "expiration_date" or k == "start_date":
             try:
-                date = is_valid_date(v)
+                date = valid_date(v)
                 setattr(announcement, k, date)
             except:
                 return constants.INVALID_DATE_ERROR, 400
@@ -77,7 +77,6 @@ def update_announcement(post_body, id):
             else:
                 assign_apps_to_announcement(announcement, v)
         else:
-            # setattr(announcement, k, v)
             setattr(announcement, k, v)
     db.session.commit()
     return constants.SUCCESSFUL_RESPONSE, 200
