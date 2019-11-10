@@ -53,7 +53,6 @@ def commit_announcement(post_body):
     assign_apps_to_announcement(announcement, included_apps)
     db.session.add(announcement)
     db.session.commit()
-    print(announcement.serialize())
     return constants.SUCCESSFUL_RESPONSE, 201
 
 
@@ -61,7 +60,7 @@ def update_announcement(post_body, id):
     announcement = Announcement.query.get(id)
     if announcement is None:
         return constants.INVALID_ANNOUNCEMENT_ID_ERROR, 400
-    # If any of the keys are not a field of Announcement return an error
+    # If any of the keys are not an editable field of Announcement return an error
     if not (all(k in constants.EDITABLE_ANNOUNCEMENT_FIELDS for k in post_body)):
         return constants.INVALID_REQUEST_BODY_ERROR, 400
     for k, v in post_body.items():
