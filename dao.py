@@ -1,100 +1,102 @@
-import Constants
 from db import Announcement, App, db
 from datetime import datetime
+import constants
 import json
 
 
-def getAppByName(name):
+def get_app_by_name(name):
     App.query.filter(App.name == name).first()
 
 
-def valid_date(str):
-    return datetime.strptime(str, "%Y/%m/%d")
+def is_valid_date(str):
+    return datetime.strptime(str, "%m/%d/%Y")
 
 
-def assignAppsToAnnouncement(announcement, apps):
-    announcement.includedApps = []
+def assign_apps_to_announcement(announcement, apps):
+    announcement.included_apps = []
     for app in apps:
-        appModel = getAppByName(app)
+        appModel = get_app_by_name(app)
         if not appModel:
             appModel = App(name=app)
             db.session.add(appModel)
-        announcement.includedApps += [appModel]
+        announcement.included_apps += [appModel]
 
 
-def commitAnnouncement(post_body):
+def commit_announcement(post_body):
     try:
         body = post_body.get("body")
-        ctaAction = post_body.get("ctaAction")
-        ctaText = post_body.get("ctaText")
-        expirationDate = post_body.get("expirationDate")
-        imageUrl = post_body.get("imageUrl")
-        includedApps = post_body.get("includedApps")
+        cta_action = post_body.get("cta_action")
+        cta_text = post_body.get("cta_text")
+        expiration_date = post_body.get("expiration_date")
+        image_url = post_body.get("image_url")
+        included_apps = post_body.get("included_apps")
         subject = post_body.get("subject")
-        startDate = post_body.get("startDate")
+        start_date = post_body.get("start_date")
     except:
-        return Constants.INVALID_REQUEST_BODY_ERROR, 400
+        return constants.INVALID_REQUEST_BODY_ERROR, 400
     try:
-        expiration = valid_date(expirationDate)  # checking for valid date
-        start = valid_date(startDate)
+        expiration = is_valid_date(expiration_date)
+        start = is_valid_date(start_date)
     except:
-        return Constants.INVALID_DATE_ERROR, 400
-    if not (all(app in Constants.VALID_APPS for app in includedApps)) or not includedApps:
-        return Constants.INVALID_APP_ERROR, 400
+        return constants.INVALID_DATE_ERROR, 400
+    if not included_apps or not (all(app in constants.VALID_APPS for app in included_apps)):
+        return constants.INVALID_APP_NAME_ERROR, 400
     announcement = Announcement(
         body=body,
-        ctaAction=ctaAction,
-        ctaText=ctaText,
-        expirationDate=expiration,
-        imageUrl=imageUrl,
-        startDate=start,
+        cta_action=cta_action,
+        cta_text=cta_text,
+        expiration_date=expiration,
+        image_url=image_url,
+        start_date=start,
         subject=subject,
     )
-    assignAppsToAnnouncement(announcement, includedApps)
+    assign_apps_to_announcement(announcement, included_apps)
     db.session.add(announcement)
     db.session.commit()
-    return Constants.SUCCESSFUL_RESPONSE, 201
+    print(announcement.serialize())
+    return constants.SUCCESSFUL_RESPONSE, 201
 
 
-def updateAnnouncement(post_body, id):
+def update_announcement(post_body, id):
     announcement = Announcement.query.get(id)
     if announcement is None:
-        return Constants.INVALID_ANNOUNCEMENT_ERROR, 400
+        return constants.INVALID_ANNOUNCEMENT_ID_ERROR, 400
     # If any of the keys are not a field of Announcement return an error
-    if not (all(k in (Announcement.__table__.columns + ["includedApps"]) for k in post_body)):
-        return Constants.INVALID_REQUEST_BODY_ERROR, 400
+    if not (all(k in constants.EDITABLE_ANNOUNCEMENT_FIELDS for k in post_body)):
+        return constants.INVALID_REQUEST_BODY_ERROR, 400
     for k, v in post_body.items():
-        if k == "expirationDate" or k == "startDate":
+        if k == "expiration_date" or k == "start_date":
             try:
-                date = valid_date(v)  # checking for valid date
+                date = is_valid_date(v)
                 setattr(announcement, k, date)
             except:
-                return Constants.INVALID_DATE_ERROR, 400
-        elif k == "includedApps":
-            if not (all(app in Constants.VALID_APPS for app in v)) or not v:
-                return Constants.INVALID_APP_ERROR, 400
+                return constants.INVALID_DATE_ERROR, 400
+        elif k == "included_apps":
+            if not (all(app in constants.VALID_APPS for app in v)) or not v:
+                return constants.INVAL, 400
             else:
-                assignAppsToAnnouncement(announcement, v)
+                assign_apps_to_announcement(announcement, v)
         else:
+            # setattr(announcement, k, v)
             setattr(announcement, k, v)
     db.session.commit()
-    return Constants.SUCCESSFUL_RESPONSE, 200
+    return constants.SUCCESSFUL_RESPONSE, 200
 
 
-def deleteAnnouncement(id):
+def delete_announcement(id):
     announcement = Announcement.query.get(id)
-    if announcement is None:
-        return Constants.INVALID_ANNOUNCEMENT_ERROR, 400
+    if not announcement:
+        return constants.INVALID_ANNOUNCEMENT_ID_ERROR, 400
     db.session.delete(announcement)
     db.session.commit()
-    return Constants.SUCCESSFUL_RESPONSE, 200
+    return constants.SUCCESSFUL_RESPONSE, 200
 
 
-def getAnnouncements(app):
+def get_announcements(app):
     active_announcements = (
-        Announcement.query.filter(Announcement.includedApps.any(name=app))
-        .filter(Announcement.expirationDate > datetime.now())
-        .filter(Announcement.startDate < datetime.now())
+        Announcement.query.filter(Announcement.included_apps.any(name=app))
+        .filter(Announcement.expiration_date > datetime.now())
+        .filter(Announcement.start_date < datetime.now())
         .all()
     )
     res = {

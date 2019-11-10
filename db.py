@@ -14,24 +14,24 @@ class Announcement(db.Model):
     __tablename__ = "announcements"
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String, nullable=False)
-    ctaAction = db.Column(db.String, nullable=False)
-    ctaText = db.Column(db.String, nullable=False)
-    expirationDate = db.Column(db.Date, nullable=False)
-    imageUrl = db.Column(db.String, nullable=False)
-    startDate = db.Column(db.Date, nullable=False)
+    cta_action = db.Column(db.String, nullable=False)
+    cta_text = db.Column(db.String, nullable=False)
+    expiration_date = db.Column(db.Date, nullable=False)
+    image_url = db.Column(db.String, nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
     subject = db.Column(db.String, nullable=False)
-    includedApps = db.relationship("App", secondary=associationTable)
+    included_apps = db.relationship("App", secondary=associationTable)
 
     def serialize(self):
         return {
             "id": self.id,
             "body": self.body,
-            "ctaAction": self.ctaAction,
-            "ctaText": self.ctaText,
-            "expirationDate": str(self.expirationDate),
-            "includedApps": [app.serialize() for app in self.includedApps],
-            "imageUrl": self.imageUrl,
-            "startDate": str(self.startDate),
+            "ctaAction": self.cta_action,
+            "ctaText": self.cta_text,
+            "expirationDate": str(self.expiration_date),
+            "includedApps": [app.serialize() for app in self.included_apps],
+            "imageUrl": self.image_url,
+            "startDate": str(self.start_date),
             "subject": self.subject,
         }
 
