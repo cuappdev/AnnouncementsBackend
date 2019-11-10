@@ -29,7 +29,7 @@ class Announcement(db.Model):
             "ctaAction": self.ctaAction,
             "ctaText": self.ctaText,
             "expirationDate": str(self.expirationDate),
-            "includedApps": [app.serialize() + " " for app in self.includedApps],
+            "includedApps": [app.serialize() for app in self.includedApps],
             "imageUrl": self.imageUrl,
             "startDate": str(self.startDate),
             "subject": self.subject,

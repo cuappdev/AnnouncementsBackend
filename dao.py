@@ -1,6 +1,7 @@
 import Constants
 from db import Announcement, App, db
 from datetime import datetime
+import json
 
 
 def getAppByName(name):
@@ -100,4 +101,4 @@ def getAnnouncements(app):
         "success": True,
         "data": [announcement.serialize() for announcement in active_announcements],
     }
-    return res, 200
+    return json.dumps(res), 200
