@@ -15,11 +15,11 @@ def valid_date(str):
 def assign_apps_to_announcement(announcement, apps):
     announcement.included_apps = []
     for app in apps:
-        appModel = get_app_by_name(app)
-        if not appModel:
-            appModel = App(name=app)
-            db.session.add(appModel)
-        announcement.included_apps += [appModel]
+        app_model = get_app_by_name(app)
+        if not app_model:
+            app_model = App(name=app)
+            db.session.add(app_model)
+        announcement.included_apps += [app_model]
 
 
 def commit_announcement(post_body):
@@ -72,7 +72,7 @@ def update_announcement(post_body, id):
                 return constants.INVALID_DATE_ERROR, 400
         elif k == "included_apps":
             if not (all(app in constants.VALID_APPS for app in v)) or not v:
-                return constants.INVAL, 400
+                return constants.INVALID_APP_NAME_ERROR, 400
             else:
                 assign_apps_to_announcement(announcement, v)
         else:
