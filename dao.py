@@ -71,7 +71,7 @@ def update_announcement(post_body, id):
             except:
                 return constants.INVALID_DATE_ERROR, 400
         elif k == "included_apps":
-            if not (all(app in constants.VALID_APPS for app in v)) or not v:
+            if not v or not (all(app in constants.VALID_APPS for app in v)):
                 return constants.INVALID_APP_NAME_ERROR, 400
             else:
                 assign_apps_to_announcement(announcement, v)

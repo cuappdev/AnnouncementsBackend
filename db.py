@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-associationTable = db.Table(
+association_table = db.Table(
     "association",
     db.Model.metadata,
     db.Column("announcement_id", db.Integer, db.ForeignKey("announcements.id")),
@@ -20,7 +20,7 @@ class Announcement(db.Model):
     image_url = db.Column(db.String, nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     subject = db.Column(db.String, nullable=False)
-    included_apps = db.relationship("App", secondary=associationTable)
+    included_apps = db.relationship("App", secondary=association_table)
 
     def serialize(self):
         return {
