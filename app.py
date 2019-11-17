@@ -23,12 +23,10 @@ def authenticate(f):
     @wraps(f)
     def inner(*args, **kwargs):
         auth_header = request.headers.get("Authorization")
-        if auth_header is None:
+        if not auth_header:
             return constants.MISSING_REQUEST_TOKEN_ERROR
         bearer_token = auth_header.replace("Bearer ", "").strip()
-        if not bearer_token:
-            return constants.INVALID_REQUEST_TOKEN_ERROR
-        if bearer_token != environ["TOKEN"]:
+        if not bearer_token or bearer_token != environ["TOKEN"]:
             return constants.INVALID_REQUEST_TOKEN_ERROR
         return f(*args, **kwargs)
 
