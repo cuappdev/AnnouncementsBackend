@@ -1,0 +1,23 @@
+language: python
+python:
+- '3.6'
+sudo: required
+services:
+- docker
+script:
+- 
+addons:
+  ssh_known_hosts: announcements-backend.cornellappdev.com
+deploy:
+  provider: script
+  script: bash docker_push
+  skip_cleanup: true
+  on:
+    branch: master
+env:
+  global:
+  - secure: p4oJZB3kPqjvX2vuZ9iuiXBPuTs3HGUlOkxi93RO9NugAvWPEL7e9b4+WTvnWlu+Q1Vnzfaes2/+QI/07o+TWLrzm3zFUzrhJpIY+GMn+AQF9RboWE4CHo4avltUqDqFVcLIRYSTH7S07JvzCBrjhA3XGyic3NQsdpv6YwkJGr4YpuGA1NsCcT+OEy8DHkceiakgbRlzH4Zov/I8t9wZIg9AWJEx82n5ouYWjhjP1UrCPoIVn6Z0o0PYBlirXkrHiVNXC9zXnDUSjkOElFaiD24TP/6GDAn9Kgzbr97ijdFj/DGrxGyzu52KlikOkUeFMjQwJ2FFnbhDNJkqtU68Ym3HqKnTXfD8Si5d7kZy8wUaZjFcRcdoHLfJGL6BuXMZXRpZq8QbMxDMpb2ncKDwqodnLrbZtA4ZCEXObi45NcM/fDY90w+TQgvRI+baN9b10ysOuvHvyBD07sLDpWimJlmh66b6ZVntQiRGX4zVCgtQKkLCp7oFImvMHgXRm2kNSyxYNHWyl3ITR7uE65MAQJbBwAXQdRxJkv8qon76kAs19gRMZqpNx5v46tS4sIIg5qWVbXrufQgWN9kRD/1/cbpOAe9/2RXNhDSVE9BOeKn2aGhMjsVNEX6bGyDttcDbDpCWieNUHKVAMIid2hhkxPCoe2tfi6nxDqQfMvM0nF0=
+  - secure: dQ1nBzcGuOQYGavxk5H2f0t7zjhhYZCHLhmpcj7a4AGI1+NMLdyrd4XSQlvQmwx3wwdX16cntwrjHUtuqkQa5ytliuQwD/1chG5X+jyJYAt8Mnrgewt2KmLLMILZuuamvFJ99ht0uQtq9+bZGKzUYQP4UzJxLvciUwVpYKtMw9il9kAYa/9fgUndrK+v/DQiawRJmtl9n1hGY/b3i6Bt8r1XSoT/Zt9hXHaKg6DPdowhR7WI9nTncGN5g3clWozOZS+m9oF5rWVDTyuHZqtoKk0bJRCwemB7D4YclVG8iPTcMphzNFXKH+SqEmNeKnHeAQGforcUR2QQjg76Ou1BlC8kps96noXhlE/ycIP1rYnYmSXzbRvNrH83nkcMHqfmesx/aTAsFDVmaymEY7gqkrMYG0SNyc/y0YVF5iKueOoPkylI/YyaE1Jopi/TwfQKv0WkK7ZINTll6wPKHpVskyVgXXQ+gjoYo+W2yURBhotFllNI4JSUe9JKX8OxVLNHHuzkr4VXUKs2h0c2aaVmgmuqN/6Zp60SvRoeYNy6BcvBAZe5VO1NsrbKCgxHLKLtmPHxsv9gQaA5quAGEu5XSMjfzRdnMnGIf0bhPrA73DZPnzl/slfbU/irzWAFxZZtYiS4OSTNpJUbO4a41rr7g1MFXwo6uMFN70pqQtuNVbU=
+before_install:
+- openssl aes-256-cbc -K $encrypted_74b764d6375e_key -iv $encrypted_74b764d6375e_iv
+  -in server.pem.enc -out server.pem -d
