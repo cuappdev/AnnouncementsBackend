@@ -59,7 +59,6 @@ def delete_announcement(id):
 
 
 @app.route("/active/<app>/")
-@authenticate
 def get_announcements(app):
     res = dao.get_announcements(app)
     return res
