@@ -5,6 +5,7 @@ INVALID_ANNOUNCEMENT_ID_ERROR = json.dumps({"success": False, "error": "No annou
 INVALID_REQUEST_BODY_ERROR = json.dumps({"success": False, "error": "Invalid request body"})
 SUCCESSFUL_RESPONSE = json.dumps({"success": True})
 INVALID_APP_NAME_ERROR = json.dumps({"success": False, "error": "Invalid app identifier(s)"})
+INVALID_REQUEST_TOKEN = json.dumps({"success": False, "error": "Permission Denied"})
 EDITABLE_ANNOUNCEMENT_FIELDS = [
     "body",
     "cta_action",

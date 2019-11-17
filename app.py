@@ -19,6 +19,8 @@ with app.app_context():
 
 @app.route("/create/", methods=["POST"])
 def create_announcement():
+    if not dao.verify_request(request):
+        return dao.auth_failed()
     post_body = json.loads(request.data)
     res = dao.commit_announcement(post_body)
     return res
@@ -26,6 +28,8 @@ def create_announcement():
 
 @app.route("/update/<id>/", methods=["POST"])
 def update(id):
+    if not dao.verify_request(request):
+        return dao.auth_failed()
     post_body = json.loads(request.data)
     res = dao.update_announcement(post_body, id)
     return res
@@ -33,12 +37,16 @@ def update(id):
 
 @app.route("/delete/<id>/", methods=["DELETE"])
 def delete_announcement(id):
+    if not dao.verify_request(request):
+        return dao.auth_failed()
     res = dao.delete_announcement(id)
     return res
 
 
 @app.route("/active/<app>/")
 def get_announcements(app):
+    if not dao.verify_request(request):
+        return dao.auth_failed()
     res = dao.get_announcements(app)
     return res
 

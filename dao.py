@@ -1,7 +1,20 @@
 from db import Announcement, App, db
 from datetime import datetime
+from os import environ
 import constants
 import json
+
+
+def verify_request(request):
+    try:
+        token = request.headers.get("token")
+        return environ["TOKEN"] == token
+    except:
+        return False
+
+
+def auth_failed():
+    return constants.INVALID_REQUEST_TOKEN
 
 
 def get_app_by_name(name):
@@ -97,8 +110,5 @@ def get_announcements(app):
         .filter(Announcement.start_date < datetime.now())
         .all()
     )
-    res = {
-        "success": True,
-        "data": [announcement.serialize() for announcement in active_announcements],
-    }
+    res = {"success": True, "data": [announcement.serialize() for announcement in active_announcements]}
     return json.dumps(res), 200
