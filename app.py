@@ -26,7 +26,7 @@ def authenticate(f):
         if auth_header is None:
             return constants.MISSING_REQUEST_TOKEN_ERROR
         bearer_token = auth_header.replace("Bearer ", "").strip()
-        if bearer_token is None or not bearer_token:
+        if not bearer_token:
             return constants.INVALID_REQUEST_TOKEN_ERROR
         if bearer_token != environ["TOKEN"]:
             return constants.INVALID_REQUEST_TOKEN_ERROR
