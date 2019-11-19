@@ -97,8 +97,5 @@ def get_announcements(app):
         .filter(Announcement.start_date < datetime.now())
         .all()
     )
-    res = {
-        "success": True,
-        "data": [announcement.serialize() for announcement in active_announcements],
-    }
+    res = {"success": True, "data": [announcement.serialize() for announcement in active_announcements]}
     return json.dumps(res), 200
