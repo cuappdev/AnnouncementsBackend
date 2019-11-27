@@ -65,7 +65,7 @@ or
 	"body":"Body",
 	"cta_action": "Call to Action URL",
 	"cta_text": "Call to Action Text",
-	"expiration_date":"dd/mm/yyyy",
+	"expiration_date": "dd/mm/yyyy",
 	"image_url": "Image URL",
 	"included_apps": ["<app_name>","<app_name>","..."],
 	"subject": "Subject",
@@ -96,11 +96,11 @@ or
 ```
 
 **Body:**  
-###### Note: the request body can have any combination of parameters as long as they are fields of the Announcement model.
+###### Note: the request body can be any combination of valid fields of the Announcement model.
 ```json
 {
 	"cta_text": "Call to Action Text",
-	"expiration_date":"dd/mm/yyyy",
+	"expiration_date": "dd/mm/yyyy",
 	"included_apps": ["<app_name>","<app_name>","..."],
 	"subject": "Subject",
 } 
