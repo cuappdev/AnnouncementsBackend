@@ -4,7 +4,7 @@
 ```json
 {
 	"success": true, 
-    	"data": "[Announcement]"
+    	"data": ["<Announcement>"]
 }  
 ```
 or  
@@ -67,7 +67,7 @@ or
 	"cta_text": "Call to Action Text",
 	"expiration_date":"dd/mm/yyyy",
 	"image_url": "Image URL",
-	"included_apps": ["<app_name>","<app_name>..."],
+	"included_apps": ["<app_name>","<app_name>","..."],
 	"subject": "Subject",
 	"start_date": "dd/mm/yyyy"
 } 
@@ -76,7 +76,7 @@ or
 **Returns:**
 ```json
 {
-	"success":true
+	"success": true
 } 
 ```
 or  
@@ -101,7 +101,7 @@ or
 {
 	"cta_text": "Call to Action Text",
 	"expiration_date":"dd/mm/yyyy",
-	"included_apps": ["<app_name>","<app_name>"],
+	"included_apps": ["<app_name>","<app_name>","..."],
 	"subject": "Subject",
 } 
 
@@ -109,7 +109,7 @@ or
 **Returns:**
 ```json
 {
-	"success":true,
+	"success": true,
 } 
 ```
 or  
@@ -130,7 +130,7 @@ or
 **Returns:**
 ```json
 {
-	"success":true,
+	"success": true,
 } 
 ```
 or  
