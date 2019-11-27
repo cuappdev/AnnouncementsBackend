@@ -1,19 +1,31 @@
-## Endpoints
-#### /active/{app_name}/ • GET  
-*returns*:  
-{"success": true, data: [Announcement]}  
+# Endpoints
+## /active/{app_name}/ • GET  
+**Returns:**  
+```json
+{
+	"success": true, 
+    "data": [Announcement]
+}  
+```
+or  
+```json
+{
+	"success": false,
+ 	"error": "<error_msg>"
+ }  
+```
 *class* Announcement:
 
 | **Name**        | **Type**                                       | **Description**                                                                                                                                                                                 |
 | --------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | id              | Int                                            | The ID number of the alert.                                                                                                                                                                     |
 | body         | String                                         | The body of the announcement.                                                                                                                                                                       |
-| cta_action        | String                                         | The 'action' associated with the announcement. (e.g. URL)                                                            |
-| cta_text          | String                                         | The text describing the behavior of the cta_action (e.g. 'Download Now').                                                                            |
-| expiration_date        | String                                         | The expiration date of the announcement (formatted mm/dd/yyyy).                                                                  |
-| included_apps          | [String]                                         | The list of apps this announcement is valid for (e.g. ["eatery", "uplift"]).                                                                  |
-| image_url        | String                                            | The URL of the image associated with the announcement.                                                                                                    |
-| start_date      | String                                         | The start date of the announcement (formatted mm/dd/yyyy). |
+| ctaAction        | String                                         | The URL associated with this announcement's call to action.                                                           |
+| ctaText          | String                                         | The text describing the behavior of the call to action (e.g. 'Download Now').                                                                            |
+| expirationDate        | String                                         | The expiration date of the announcement.                                                                  |
+| includedApps          | [String]                                         | The list of apps this announcement is valid for (e.g. ["eatery", "uplift"]).                                                                  |
+| imageUrl        | String                                            | The URL of the image associated with the announcement.                                                                                                    |
+| startDate      | String                                         | The start date of the announcement\. |
 | subject          | String                                          | The subject of the announcement.                                                                                                                                                                                                                                       |
 ----------
 *example response:*
@@ -40,14 +52,14 @@
 
 
 
-#### /create/ • POST  
-*Headers*: 
+## /create/ • POST  
+**Headers:** 
 ```json
 {
 	"Authorization": "Bearer <access_token>"
 }
 ```
-*Body*:  
+**Body:**  
 ```json
 {
 	"body":"Body",
@@ -55,29 +67,36 @@
 	"cta_text": "Call to Action Text",
 	"expiration_date":"dd/mm/yyyy",
 	"image_url": "Image URL",
-	"included_apps": ["<app_name>","<app_name>"],
+	"included_apps": ["<app_name>","<app_name>"...],
 	"subject": "Subject",
 	"start_date": "dd/mm/yyyy"
 } 
 
 ```
-*returns*:
+**Returns:**
 ```json
 {
-	"success":true,
+	"success":true
 } 
 ```
+or  
+```json
+{
+	"success": false,
+ 	"error": "<error_msg>"
+ }  
+```
 
-#### /update/{id}/ • POST     
-*Headers*: 
+## /update/{id}/ • POST     
+**Headers:** 
 ```json
 {
 	"Authorization": "Bearer <access_token>"
 }
 ```
 
-*Body*:  
-###### Note: the request body can have any number of valid parameters.
+**Body:**  
+###### Note: the request body can have any combination of parameters as long as they are fields of the Announcement model.
 ```json
 {
 	"cta_text": "Call to Action Text",
@@ -87,25 +106,37 @@
 } 
 
 ```
-*returns*:
+**Returns:**
 ```json
 {
 	"success":true,
 } 
 ```
+or  
+```json
+{
+	"success": false,
+ 	"error": "<error_msg>"
+ }  
+```
 
-#### /delete/{id}/ • DELETE  
-*Headers*: 
+## /delete/{id}/ • DELETE  
+**Headers:** 
 ```json
 {
 	"Authorization": "Bearer <access_token>"
 }
 ```
-*returns*:
+**Returns:**
 ```json
 {
 	"success":true,
 } 
 ```
-
-
+or  
+```json
+{
+	"success": false,
+ 	"error": "<error_msg>"
+ }  
+```
