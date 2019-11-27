@@ -1,5 +1,5 @@
 ## Endpoints
-#### GET • /active/{app_name}/   
+#### /active/{app_name}/ • GET  
 *returns*:  
 {"success": true, data: [Announcement]}  
 *class* Announcement:
@@ -40,7 +40,7 @@
 
 
 
-#### POST • /create/   
+#### /create/ • POST  
 *Headers*: 
 ```json
 {
@@ -68,7 +68,7 @@
 } 
 ```
 
-#### POST • /update/{id}/   
+#### /update/{id}/ • POST     
 *Headers*: 
 ```json
 {
@@ -94,7 +94,7 @@
 } 
 ```
 
-#### DELETE • /delete/{id}/   
+#### /delete/{id}/ • DELETE  
 *Headers*: 
 ```json
 {
