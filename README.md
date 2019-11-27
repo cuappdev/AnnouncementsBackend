@@ -62,7 +62,7 @@ or
 **Body:**  
 ```json
 {
-	"body":"Body",
+	"body": "Body",
 	"cta_action": "Call to Action URL",
 	"cta_text": "Call to Action Text",
 	"expiration_date": "dd/mm/yyyy",
