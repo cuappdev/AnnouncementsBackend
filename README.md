@@ -4,7 +4,7 @@ Flask
 SQLite  
 ### Virtualenv
 
-Virtualenv setup!
+Virtualenv setup:
 
 ```bash
 python3 -m venv venv
