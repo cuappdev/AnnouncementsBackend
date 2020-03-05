@@ -95,9 +95,9 @@ or
             "includedApps": [
                 "eatery"
             ],
-	    "imageHeight": 90,
+            "imageHeight": 90,
             "imageUrl": "https://pbs.twimg.com/profile_images/898067434107682816/TyrkP8wz_400x400.jpg",
-	    "imageWidth: 100,
+            "imageWidth: 100,
             "startDate": "2019-04-11",
             "subject": "SubjectTest"
         }
