@@ -97,7 +97,7 @@ or
             ],
             "imageHeight": 90,
             "imageUrl": "https://pbs.twimg.com/profile_images/898067434107682816/TyrkP8wz_400x400.jpg",
-            "imageWidth: 100,
+            "imageWidth": 100,
             "startDate": "2019-04-11",
             "subject": "SubjectTest"
         }
@@ -122,9 +122,9 @@ or
 	"cta_button_color": "#<hex color>",
 	"cta_text": "Call to Action Text",
 	"expiration_date": "dd/mm/yyyy",
-	"image_height: 90,
+	"image_height": 90,
 	"image_url": "Image URL",
-	"image_width: 100,
+	"image_width": 100,
 	"included_apps": ["<app_name>","<app_name>","..."],
 	"subject": "Subject",
 	"start_date": "dd/mm/yyyy"
