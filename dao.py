@@ -24,17 +24,17 @@ def assign_apps_to_announcement(announcement, apps):
 
 def commit_announcement(post_body):
     try:
-        body = post_body.get("body")
-        cta_action = post_body.get("cta_action")
-        cta_button_color = post_body.get("cta_button_color")
-        cta_text = post_body.get("cta_text")
-        expiration_date = post_body.get("expiration_date")
-        image_height = post_body.get("image_height")
-        image_url = post_body.get("image_url")
-        image_width = post_body.get("image_width")
-        included_apps = post_body.get("included_apps")
-        subject = post_body.get("subject")
-        start_date = post_body.get("start_date")
+        body = post_body["body"]
+        cta_action = post_body["cta_action"]
+        cta_button_color = post_body["cta_button_color"]
+        cta_text = post_body["cta_text"]
+        expiration_date = post_body["expiration_date"]
+        image_height = post_body["image_height"]
+        image_url = post_body["image_url"]
+        image_width = post_body["image_width"]
+        included_apps = post_body["included_apps"]
+        subject = post_body["subject"]
+        start_date = post_body["start_date"]
     except:
         return constants.INVALID_REQUEST_BODY_ERROR, 400
     try:
