@@ -5,7 +5,7 @@ sudo: required
 services:
 - docker
 script:
-- 
+- echo "Hello" 
 addons:
   ssh_known_hosts: announcements-backend.cornellappdev.com
 deploy:
