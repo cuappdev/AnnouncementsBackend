@@ -70,10 +70,13 @@ or
 | id              | Int                                            | The ID number of the alert.                                                                                                                                                                     |
 | body         | String                                         | The body of the announcement.                                                                                                                                                                       |
 | ctaAction        | String                                         | The URL associated with this announcement's call to action.                                                           |
+| ctaButtonColor   | String                                         | The hex color of the CTA button.                                                           |
 | ctaText          | String                                         | The text describing the behavior of the call to action (e.g. 'Download Now').                                                                            |
 | expirationDate        | String                                         | The expiration date of the announcement.                                                                  |
 | includedApps          | [String]                                         | The list of apps this announcement is valid for (e.g. ["eatery", "uplift"]).                                                                  |
+| imageHeight           | Int                                            | The height of the image.                                                                                                                                                                     |
 | imageUrl        | String                                            | The URL of the image associated with the announcement.                                                                                                    |
+| imageWidth            | Int                                            | The width of the image.                                                                                                                                                                     |
 | startDate      | String                                         | The start date of the announcement\. |
 | subject          | String                                          | The subject of the announcement.                                                                                                                                                                                                                                       |
 ----------
@@ -86,12 +89,15 @@ or
             "id": 1,
             "body": "BodyTest",
             "ctaAction": "https://www.cornellappdev.com",
+	    "ctaButtonColor": "#4287f5",
             "ctaText": "CTATest",
             "expirationDate": "2022-04-10",
             "includedApps": [
                 "eatery"
             ],
+	    "imageHeight": 90,
             "imageUrl": "https://pbs.twimg.com/profile_images/898067434107682816/TyrkP8wz_400x400.jpg",
+	    "imageWidth: 100,
             "startDate": "2019-04-11",
             "subject": "SubjectTest"
         }
@@ -113,9 +119,12 @@ or
 {
 	"body": "Body",
 	"cta_action": "Call to Action URL",
+	"cta_button_color": "#<hex color>",
 	"cta_text": "Call to Action Text",
 	"expiration_date": "dd/mm/yyyy",
+	"image_height: 90,
 	"image_url": "Image URL",
+	"image_width: 100,
 	"included_apps": ["<app_name>","<app_name>","..."],
 	"subject": "Subject",
 	"start_date": "dd/mm/yyyy"
