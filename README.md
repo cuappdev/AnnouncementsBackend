@@ -89,7 +89,7 @@ or
             "id": 1,
             "body": "BodyTest",
             "ctaAction": "https://www.cornellappdev.com",
-	    "ctaButtonColor": "#4287f5",
+            "ctaButtonColor": "#4287f5",
             "ctaText": "CTATest",
             "expirationDate": "2022-04-10",
             "includedApps": [
