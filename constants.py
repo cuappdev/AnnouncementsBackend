@@ -11,9 +11,12 @@ SUCCESSFUL_RESPONSE = json.dumps({"success": True})
 EDITABLE_ANNOUNCEMENT_FIELDS = [
     "body",
     "cta_action",
+    "cta_button_color",
     "cta_text",
     "expiration_date",
+    "image_height",
     "image_url",
+    "image_width",
     "included_apps",
     "subject",
     "start_date",
