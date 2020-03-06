@@ -5,7 +5,7 @@ import json
 
 
 def get_app_by_name(name):
-    App.query.filter_by(name=name).first()
+    return App.query.filter_by(name=name).first()
 
 
 def valid_date(str):
