@@ -21,4 +21,4 @@ EDITABLE_ANNOUNCEMENT_FIELDS = [
     "subject",
     "start_date",
 ]
-VALID_APPS = ["pollo", "eatery", "transit", "uplift", "coursegrab"]
+VALID_APPS = ["pollo", "eatery", "transit", "uplift", "coursegrab", "pear", "volume"]
